@@ -1,3 +1,4 @@
+const url = require('url');
 const express = require("express");
 const productHandler = require("@app/models/product/handlers");
 
@@ -5,7 +6,8 @@ const router = express.Router();
 
 async function getProducts(request, response) {
   try {
-    const products = await productHandler.getProducts();
+    const queryObject = url.parse(request.url, true).query;
+    const products = await productHandler.getProducts(queryObject);
     response.send({ products });
   } catch (error) {
     response.status(500).send(error);

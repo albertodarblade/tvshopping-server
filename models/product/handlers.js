@@ -1,5 +1,18 @@
 const Model = require("./model");
 
+function convertQueryParams(queryParams) {
+  const validQueries = {};
+  if(queryParams.name) {
+    validQueries.name = new RegExp(queryParams.name, 'i');
+  }
+
+  if(queryParams.description) {
+    validQueries.description = new RegExp(queryParams.description, 'i');
+  }
+
+  return validQueries;
+}
+
 async function postProduct(payload) {
   const {
     name,
@@ -52,8 +65,9 @@ async function putProduct(payload) {
   return Model.findByIdAndUpdate(_id, properties, { new: true });
 }
 
-async function getProducts() {
-  const products = await Model.find();
+async function getProducts(queryParams = {}) {
+  const findQuery = convertQueryParams(queryParams);
+  const products = await Model.find(findQuery);
   return products;
 }
 
